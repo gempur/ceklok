@@ -1,0 +1,8 @@
+CREATE TABLE marking (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    latitude DECIMAL(9,6) NOT NULL,
+    longitude DECIMAL(9,6) NOT NULL,
+    user_agent TEXT NOT NULL,
+    flags VARCHAR(50) NOT NULL
+);
