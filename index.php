@@ -18,8 +18,9 @@ if ($conn->connect_error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceklok!</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 
     <script>
         function getLocation() {
@@ -28,14 +29,29 @@ if ($conn->connect_error) {
                     function(position) {
                         $('#latitude').val(position.coords.latitude);
                         $('#longitude').val(position.coords.longitude);
+                        $('.info').html("<p>Akses lokasi berhasil.</p>");
                     },
                     function(error) {
                         console.error("Error occurred. Error code: " + error.code);
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                $('.info').html("<p>User denied the request for Geolocation.</p>");
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                $('.info').html("<p>Location information is unavailable.</p>");
+                                break;
+                            case error.TIMEOUT:
+                                $('.info').html("<p>The request to get user location timed out.</p>");
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                $('.info').html("<p>An unknown error occurred.</p>");
+                                break;
+                        }
                     },
                    
                 );
             } else {
-                alert("Geolocation is not supported by this browser.");
+                $('.info').html("<p>Geolocation is not supported by this browser.</p>");
             }
         }
        
@@ -46,24 +62,28 @@ if ($conn->connect_error) {
     <h1>Check-In</h1>
     <p>Silakan isi data berikut untuk melakukan check-in.</p>
     <p>Pastikan lokasi Anda sudah aktif.</p>
+    
     <div class='center-align'>
     <form method="post" action="">
+        
         <div>
-            <label for="latitude">Latitude:</label>
-            <input type="text" id="latitude" name="latitude" required>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Latitude</span>
+                <input type="text" class="form-control" id="latitude" name="latitude" >
+                <span class="input-group-text">Longitude</span>
+                <input type="text" class="form-control" id="longitude" name="longitude" >
+            </div>
         </div>
-        <div>
-            <label for="longitude">Longitude:</label>
-            <input type="text" id="longitude" name="longitude" required>
-        </div>
+       
         <div>
             <label for="flags">Flags:</label>
-            <select id="flags" name="flags">
-                <option value="0" selected>Check In</option>
-                <option value="1">Check Out</option>
-                <option value="2">Jeda</option>
+            <select class="form-control" id="flags" name="flags">
+                <option value="CheckIn" selected>Check In</option>
+                <option value="CheckOut">Check Out</option>
+                <option value="Jeda">Jeda</option>
             </select>
         </div>
+        <div class="info"></div>
         <button type="submit" name="checkin">Check In</button>
     </form>
     </div>
